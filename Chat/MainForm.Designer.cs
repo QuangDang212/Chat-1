@@ -219,7 +219,7 @@
             this.pClientChat.Controls.Add(this.rtbClientChat);
             this.pClientChat.Location = new System.Drawing.Point(8, 40);
             this.pClientChat.Name = "pClientChat";
-            this.pClientChat.Size = new System.Drawing.Size(570, 450);
+            this.pClientChat.Size = new System.Drawing.Size(570, 456);
             this.pClientChat.TabIndex = 11;
             // 
             // rtbClientChat
@@ -230,7 +230,7 @@
             this.rtbClientChat.Location = new System.Drawing.Point(0, 0);
             this.rtbClientChat.Name = "rtbClientChat";
             this.rtbClientChat.ReadOnly = true;
-            this.rtbClientChat.Size = new System.Drawing.Size(568, 448);
+            this.rtbClientChat.Size = new System.Drawing.Size(568, 454);
             this.rtbClientChat.TabIndex = 7;
             this.rtbClientChat.Text = "";
             this.rtbClientChat.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtbClientChat_LinkClicked);
@@ -246,21 +246,22 @@
             this.lvClientUsers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lvClientUsers.Location = new System.Drawing.Point(586, 40);
             this.lvClientUsers.Name = "lvClientUsers";
-            this.lvClientUsers.Size = new System.Drawing.Size(208, 450);
+            this.lvClientUsers.Size = new System.Drawing.Size(214, 456);
             this.lvClientUsers.TabIndex = 10;
             this.lvClientUsers.UseCompatibleStateImageBehavior = false;
             this.lvClientUsers.View = System.Windows.Forms.View.Details;
+            this.lvClientUsers.DoubleClick += new System.EventHandler(this.lvClientUsers_DoubleClick);
             // 
             // chClientNickname
             // 
             this.chClientNickname.Text = "User list";
-            this.chClientNickname.Width = 204;
+            this.chClientNickname.Width = 214;
             // 
             // btnClientSend
             // 
             this.btnClientSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClientSend.Enabled = false;
-            this.btnClientSend.Location = new System.Drawing.Point(722, 496);
+            this.btnClientSend.Location = new System.Drawing.Point(728, 500);
             this.btnClientSend.Name = "btnClientSend";
             this.btnClientSend.Size = new System.Drawing.Size(72, 24);
             this.btnClientSend.TabIndex = 9;
@@ -273,7 +274,7 @@
             this.txtClientMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtClientMessage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtClientMessage.Location = new System.Drawing.Point(8, 498);
+            this.txtClientMessage.Location = new System.Drawing.Point(8, 502);
             this.txtClientMessage.Name = "txtClientMessage";
             this.txtClientMessage.Size = new System.Drawing.Size(528, 20);
             this.txtClientMessage.TabIndex = 8;
@@ -317,9 +318,9 @@
             // 
             this.btnServerSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnServerSend.Enabled = false;
-            this.btnServerSend.Location = new System.Drawing.Point(722, 497);
+            this.btnServerSend.Location = new System.Drawing.Point(728, 500);
             this.btnServerSend.Name = "btnServerSend";
-            this.btnServerSend.Size = new System.Drawing.Size(72, 23);
+            this.btnServerSend.Size = new System.Drawing.Size(72, 24);
             this.btnServerSend.TabIndex = 11;
             this.btnServerSend.Text = "Send";
             this.btnServerSend.UseVisualStyleBackColor = true;
@@ -330,9 +331,9 @@
             this.txtServerMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtServerMessage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtServerMessage.Location = new System.Drawing.Point(8, 498);
+            this.txtServerMessage.Location = new System.Drawing.Point(8, 502);
             this.txtServerMessage.Name = "txtServerMessage";
-            this.txtServerMessage.Size = new System.Drawing.Size(706, 20);
+            this.txtServerMessage.Size = new System.Drawing.Size(712, 20);
             this.txtServerMessage.TabIndex = 10;
             this.txtServerMessage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtServerMessage_KeyDown);
             // 
@@ -363,7 +364,7 @@
             this.pServerConsole.Controls.Add(this.rtbServerConsole);
             this.pServerConsole.Location = new System.Drawing.Point(8, 40);
             this.pServerConsole.Name = "pServerConsole";
-            this.pServerConsole.Size = new System.Drawing.Size(570, 450);
+            this.pServerConsole.Size = new System.Drawing.Size(570, 456);
             this.pServerConsole.TabIndex = 8;
             // 
             // rtbServerConsole
@@ -374,7 +375,7 @@
             this.rtbServerConsole.Location = new System.Drawing.Point(0, 0);
             this.rtbServerConsole.Name = "rtbServerConsole";
             this.rtbServerConsole.ReadOnly = true;
-            this.rtbServerConsole.Size = new System.Drawing.Size(568, 448);
+            this.rtbServerConsole.Size = new System.Drawing.Size(568, 454);
             this.rtbServerConsole.TabIndex = 6;
             this.rtbServerConsole.Text = "";
             this.rtbServerConsole.WordWrap = false;
@@ -390,7 +391,7 @@
             this.lvServerUsers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lvServerUsers.Location = new System.Drawing.Point(586, 40);
             this.lvServerUsers.Name = "lvServerUsers";
-            this.lvServerUsers.Size = new System.Drawing.Size(208, 450);
+            this.lvServerUsers.Size = new System.Drawing.Size(214, 456);
             this.lvServerUsers.TabIndex = 7;
             this.lvServerUsers.UseCompatibleStateImageBehavior = false;
             this.lvServerUsers.View = System.Windows.Forms.View.Details;
@@ -398,11 +399,12 @@
             // chServerNickname
             // 
             this.chServerNickname.Text = "User list";
-            this.chServerNickname.Width = 204;
+            this.chServerNickname.Width = 214;
             // 
             // btnClientTextColor
             // 
-            this.btnClientTextColor.Location = new System.Drawing.Point(648, 496);
+            this.btnClientTextColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClientTextColor.Location = new System.Drawing.Point(654, 500);
             this.btnClientTextColor.Name = "btnClientTextColor";
             this.btnClientTextColor.Size = new System.Drawing.Size(72, 24);
             this.btnClientTextColor.TabIndex = 15;
@@ -412,10 +414,11 @@
             // 
             // txtClientMessageTo
             // 
+            this.txtClientMessageTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtClientMessageTo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtClientMessageTo.Location = new System.Drawing.Point(544, 498);
+            this.txtClientMessageTo.Location = new System.Drawing.Point(544, 502);
             this.txtClientMessageTo.Name = "txtClientMessageTo";
-            this.txtClientMessageTo.Size = new System.Drawing.Size(96, 20);
+            this.txtClientMessageTo.Size = new System.Drawing.Size(102, 20);
             this.txtClientMessageTo.TabIndex = 16;
             // 
             // MainForm

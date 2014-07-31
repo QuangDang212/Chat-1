@@ -183,7 +183,7 @@ namespace Chat
 
             if (client != null)
             {
-                OnConsoleOutput(string.Format("Packet received ({0} {1}): {2}", client.UserInfo.Nickname, client.IP, text));
+                OnConsoleOutput(string.Format("{0} {1}: {2}", client.UserInfo.Nickname, client.IP, text));
 
                 PacketInfo packetInfo = JsonConvert.DeserializeObject<PacketInfo>(text);
 
@@ -191,7 +191,11 @@ namespace Chat
                 {
                     case "Connect":
                         client.UserInfo.Nickname = packetInfo.Parameters["Nickname"];
-                        string password = packetInfo.Parameters["Password"];
+                        string password = "";
+                        if (packetInfo.Parameters.ContainsKey("Password"))
+                        {
+                            password = packetInfo.Parameters["Password"];
+                        }
                         ClientConnect(client, password);
                         break;
                     case "Disconnect":
@@ -223,7 +227,7 @@ namespace Chat
         public void KickClient(Client client, string reason)
         {
             PacketInfo packetInfo = new PacketInfo("Kick");
-            packetInfo.Parameters.Add("Reason", reason);
+            packetInfo.AddParameter("Reason", reason);
             client.SendPacket(packetInfo);
             client.Disconnect();
         }

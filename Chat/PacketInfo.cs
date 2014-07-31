@@ -36,7 +36,16 @@ namespace Chat
         public PacketInfo(string command)
         {
             Command = command;
-            Parameters = new Dictionary<string, string>();
+        }
+
+        public void AddParameter(string name, string value)
+        {
+            if (Parameters == null)
+            {
+                Parameters = new Dictionary<string, string>();
+            }
+
+            Parameters.Add(name, value);
         }
 
         public T GetData<T>()

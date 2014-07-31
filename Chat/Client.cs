@@ -62,7 +62,7 @@ namespace Chat
         private void Initialize()
         {
             isConnected = true;
-            UserInfo = new UserInfo("Unknown");
+            UserInfo = new UserInfo("[Unknown]");
             IP = client.Client.RemoteEndPoint.ToString();
             BeginRead();
         }
@@ -129,7 +129,11 @@ namespace Chat
         public void SendPacket(PacketInfo packetInfo)
         {
             StreamWriter sw = new StreamWriter(client.GetStream());
-            string data = JsonConvert.SerializeObject(packetInfo);
+            JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+            string data = JsonConvert.SerializeObject(packetInfo, jsonSettings);
             Debug.WriteLine("SendPacket: " + data);
             sw.Write(data);
             sw.Flush();

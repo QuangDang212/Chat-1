@@ -24,6 +24,7 @@
 
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -74,8 +75,8 @@ namespace Chat
                 client.MessageReceived += new Client.StringEventHandler(client_MessageReceived);
                 client.Disconnected += new Client.DisconnectEventHandler(client_Disconnected);
                 PacketInfo packetInfo = new PacketInfo("Connect");
-                packetInfo.Parameters.Add("Nickname", Nickname);
-                packetInfo.Parameters.Add("Password", password);
+                packetInfo.AddParameter("Nickname", Nickname);
+                if (!string.IsNullOrEmpty(password)) packetInfo.AddParameter("Password", password);
                 client.SendPacket(packetInfo);
                 IsConnected = true;
             }
@@ -94,7 +95,7 @@ namespace Chat
         public void Disconnect()
         {
             PacketInfo packetInfo = new PacketInfo("Disconnect");
-            packetInfo.Parameters.Add("Reason", "User disconnect");
+            packetInfo.AddParameter("Reason", "User disconnect");
             client.SendPacket(packetInfo);
             client.Disconnect();
         }

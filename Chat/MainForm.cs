@@ -88,15 +88,10 @@ namespace Chat
         {
             InvokeForm(() =>
             {
-                if (rtbServerConsole.TextLength > 0)
-                {
-                    rtbServerConsole.AppendText(Environment.NewLine);
-                }
-
                 rtbServerConsole.SelectionColor = Color.Gray;
                 rtbServerConsole.AppendText(DateTime.Now.ToLongTimeString() + " ");
                 rtbServerConsole.SelectionColor = Color.Black;
-                rtbServerConsole.AppendText(message);
+                rtbServerConsole.AppendText(message + Environment.NewLine);
                 rtbServerConsole.ScrollToCaret();
             });
         }
@@ -345,6 +340,14 @@ namespace Chat
                     TextColor = colorDialog.Color;
                     txtClientMessage.ForeColor = TextColor;
                 }
+            }
+        }
+
+        private void lvClientUsers_DoubleClick(object sender, EventArgs e)
+        {
+            if (lvClientUsers.SelectedItems.Count > 0)
+            {
+                txtClientMessageTo.Text = lvClientUsers.SelectedItems[0].Text;
             }
         }
     }
