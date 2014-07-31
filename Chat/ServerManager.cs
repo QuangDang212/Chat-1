@@ -204,9 +204,11 @@ namespace Chat
                             MessageInfo messageInfo = packetInfo.GetData<MessageInfo>();
                             messageInfo.FromUser = client.UserInfo;
                             packetInfoMessage.Data = messageInfo;
+
                             if (messageInfo.ToUser != null && !string.IsNullOrEmpty(messageInfo.ToUser.Nickname))
                             {
                                 SendTo(messageInfo.ToUser, packetInfoMessage);
+                                SendTo(messageInfo.FromUser, packetInfoMessage);
                             }
                             else
                             {

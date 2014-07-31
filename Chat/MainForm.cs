@@ -23,6 +23,7 @@
 #endregion License Information (GPL v3)
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -31,41 +32,80 @@ namespace Chat
 {
     public partial class MainForm : Form
     {
+        public Color TextColor { get; set; }
+
         private ServerManager server;
         private ClientManager client;
 
         public MainForm()
         {
             InitializeComponent();
+            TextColor = Color.Black;
         }
 
-        private void AddMessageClient(string message)
+        private void InvokeForm(Action action)
         {
-            AddMessage(rtbClientChat, message);
-        }
-
-        private void AddMessageServer(string message)
-        {
-            AddMessage(rtbServerConsole, message);
-        }
-
-        private void AddMessage(RichTextBox textBox, string message)
-        {
-            if (textBox.TextLength > 0)
+            if (InvokeRequired)
             {
-                textBox.AppendText("\r\n");
+                Invoke(action);
             }
-            textBox.SelectionColor = Color.Gray;
-            textBox.AppendText(DateTime.Now.ToLongTimeString() + " ");
-            textBox.SelectionColor = Color.Black;
-            textBox.AppendText(message);
+            else
+            {
+                action();
+            }
+        }
+
+        private void AddClientMessage(string message)
+        {
+            AddClientMessage(null, message, Color.Black);
+        }
+
+        private void AddClientMessage(string nick, string message, Color color)
+        {
+            InvokeForm(() =>
+            {
+                if (rtbClientChat.TextLength > 0)
+                {
+                    rtbClientChat.AppendText(Environment.NewLine);
+                }
+
+                rtbClientChat.SelectionColor = Color.Gray;
+                rtbClientChat.AppendText(DateTime.Now.ToLongTimeString() + " ");
+                rtbClientChat.SelectionColor = Color.Black;
+
+                if (!string.IsNullOrEmpty(nick))
+                {
+                    rtbClientChat.AppendText(nick + ": ");
+                    rtbClientChat.SelectionColor = color;
+                }
+
+                rtbClientChat.AppendText(message);
+                rtbClientChat.ScrollToCaret();
+            });
+        }
+
+        private void AddServerMessage(string message)
+        {
+            InvokeForm(() =>
+            {
+                if (rtbServerConsole.TextLength > 0)
+                {
+                    rtbServerConsole.AppendText(Environment.NewLine);
+                }
+
+                rtbServerConsole.SelectionColor = Color.Gray;
+                rtbServerConsole.AppendText(DateTime.Now.ToLongTimeString() + " ");
+                rtbServerConsole.SelectionColor = Color.Black;
+                rtbServerConsole.AppendText(message);
+                rtbServerConsole.ScrollToCaret();
+            });
         }
 
         private void ClientSendMessage()
         {
             if (client != null && client.IsConnected)
             {
-                client.SendMessage(txtClientMessage.Text);
+                client.SendMessage(txtClientMessage.Text, txtClientMessageTo.Text, TextColor);
                 txtClientMessage.ResetText();
             }
         }
@@ -82,6 +122,7 @@ namespace Chat
         private void btnStartServer_Click(object sender, EventArgs e)
         {
             btnServerStart.Enabled = false;
+
             if (btnServerStart.Text == "Start server")
             {
                 if (nudServerPort.Value > 0)
@@ -101,32 +142,30 @@ namespace Chat
                 server.StopServer();
                 btnServerSend.Enabled = false;
             }
+
             btnServerStart.Enabled = true;
         }
 
         private void server_ConsoleOutput(string text)
         {
-            this.Invoke(new MethodInvoker(delegate
-            {
-                AddMessageServer(text);
-            }));
+            AddServerMessage(text);
         }
 
         private void server_UserConnected(UserInfo userInfo)
         {
-            this.Invoke(new MethodInvoker(delegate
+            InvokeForm(() =>
             {
                 lvServerUsers.Items.Add(userInfo.Nickname);
-            }));
+            });
         }
 
         private void server_UserDisconnected(UserInfo userInfo)
         {
-            this.Invoke(new MethodInvoker(delegate
+            InvokeForm(() =>
             {
                 ListViewItem lvi = ServerFindUser(userInfo);
                 if (lvi != null) lvi.Remove();
-            }));
+            });
         }
 
         private ListViewItem ServerFindUser(UserInfo userInfo)
@@ -152,6 +191,7 @@ namespace Chat
         private void btnConnect_Click(object sender, EventArgs e)
         {
             btnClientConnect.Enabled = false;
+
             if (btnClientConnect.Text == "Connect")
             {
                 if (!string.IsNullOrEmpty(txtClientIP.Text) && nudClientPort.Value > 0 && !string.IsNullOrEmpty(txtClientNickname.Text))
@@ -176,6 +216,7 @@ namespace Chat
             {
                 ClientDisconnect();
             }
+
             btnClientConnect.Enabled = true;
         }
 
@@ -185,34 +226,38 @@ namespace Chat
             {
                 client.Disconnect();
             }
-            lvClientUsers.Items.Clear();
-            btnClientConnect.Text = "Connect";
-            btnClientSend.Enabled = false;
+
+            InvokeForm(() =>
+            {
+                lvClientUsers.Items.Clear();
+                btnClientConnect.Text = "Connect";
+                btnClientSend.Enabled = false;
+            });
         }
 
         private void client_UserConnected(UserInfo userInfo)
         {
-            this.Invoke(new MethodInvoker(delegate
+            InvokeForm(() =>
             {
                 if (!lvClientUsers.Items.Cast<ListViewItem>().Any(x => x.Text == userInfo.Nickname))
                 {
                     lvClientUsers.Items.Add(userInfo.Nickname);
                 }
-            }));
+            });
         }
 
         private void client_UserDisconnected(UserInfo userInfo)
         {
-            this.Invoke(new MethodInvoker(delegate
+            InvokeForm(() =>
             {
                 ListViewItem lvi = ClientFindUser(userInfo);
                 if (lvi != null) lvi.Remove();
-            }));
+            });
         }
 
         private void client_UserListReceived(UserInfo[] userList)
         {
-            this.Invoke(new MethodInvoker(delegate
+            InvokeForm(() =>
             {
                 foreach (UserInfo userInfo in userList)
                 {
@@ -221,41 +266,34 @@ namespace Chat
                         lvClientUsers.Items.Add(userInfo.Nickname);
                     }
                 }
-            }));
+            });
         }
 
         private void client_Notification(string text)
         {
-            this.Invoke(new MethodInvoker(delegate
-            {
-                AddMessageClient(text);
-            }));
+            AddClientMessage(text);
         }
 
         private void client_Kicked(string reason)
         {
-            this.Invoke(new MethodInvoker(delegate
-            {
-                AddMessageClient("Kicked: " + reason);
-                ClientDisconnect();
-            }));
+            AddClientMessage("Kicked: " + reason);
+            ClientDisconnect();
         }
 
         private void client_MessageReceived(MessageInfo messageInfo)
         {
-            this.Invoke(new MethodInvoker(delegate
+            string user;
+
+            if (messageInfo.ToUser != null && !string.IsNullOrEmpty(messageInfo.ToUser.Nickname))
             {
-                string user;
-                if (messageInfo.ToUser != null && !string.IsNullOrEmpty(messageInfo.ToUser.Nickname))
-                {
-                    user = string.Format("{0} -> {1}", messageInfo.FromUser.Nickname, messageInfo.ToUser.Nickname);
-                }
-                else
-                {
-                    user = messageInfo.FromUser.Nickname;
-                }
-                AddMessageClient(string.Format("{0}: {1}", user, messageInfo.Text));
-            }));
+                user = string.Format("{0} > {1}", messageInfo.FromUser.Nickname, messageInfo.ToUser.Nickname);
+            }
+            else
+            {
+                user = messageInfo.FromUser.Nickname;
+            }
+
+            AddClientMessage(user, messageInfo.Text, messageInfo.TextColor);
         }
 
         private void txtMessage_KeyDown(object sender, KeyEventArgs e)
@@ -289,6 +327,25 @@ namespace Chat
         private void MainForm_Resize(object sender, EventArgs e)
         {
             this.Refresh();
+        }
+
+        private void rtbClientChat_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            Process.Start(e.LinkText);
+        }
+
+        private void btnTextColor_Click(object sender, EventArgs e)
+        {
+            using (ColorDialog colorDialog = new ColorDialog())
+            {
+                colorDialog.Color = TextColor;
+
+                if (colorDialog.ShowDialog() == DialogResult.OK)
+                {
+                    TextColor = colorDialog.Color;
+                    txtClientMessage.ForeColor = TextColor;
+                }
+            }
         }
     }
 }

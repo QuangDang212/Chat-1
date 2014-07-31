@@ -57,6 +57,8 @@
             this.rtbServerConsole = new System.Windows.Forms.RichTextBox();
             this.lvServerUsers = new System.Windows.Forms.ListView();
             this.chServerNickname = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.btnClientTextColor = new System.Windows.Forms.Button();
+            this.txtClientMessageTo = new System.Windows.Forms.TextBox();
             this.tcMain.SuspendLayout();
             this.tpClient.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudClientPort)).BeginInit();
@@ -151,6 +153,8 @@
             // 
             // tpClient
             // 
+            this.tpClient.Controls.Add(this.txtClientMessageTo);
+            this.tpClient.Controls.Add(this.btnClientTextColor);
             this.tpClient.Controls.Add(this.txtClientPassword);
             this.tpClient.Controls.Add(this.lblClientPassword);
             this.tpClient.Controls.Add(this.nudClientPort);
@@ -229,6 +233,7 @@
             this.rtbClientChat.Size = new System.Drawing.Size(568, 448);
             this.rtbClientChat.TabIndex = 7;
             this.rtbClientChat.Text = "";
+            this.rtbClientChat.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtbClientChat_LinkClicked);
             // 
             // lvClientUsers
             // 
@@ -255,9 +260,9 @@
             // 
             this.btnClientSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClientSend.Enabled = false;
-            this.btnClientSend.Location = new System.Drawing.Point(722, 497);
+            this.btnClientSend.Location = new System.Drawing.Point(722, 496);
             this.btnClientSend.Name = "btnClientSend";
-            this.btnClientSend.Size = new System.Drawing.Size(72, 23);
+            this.btnClientSend.Size = new System.Drawing.Size(72, 24);
             this.btnClientSend.TabIndex = 9;
             this.btnClientSend.Text = "Send";
             this.btnClientSend.UseVisualStyleBackColor = true;
@@ -270,7 +275,7 @@
             this.txtClientMessage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtClientMessage.Location = new System.Drawing.Point(8, 498);
             this.txtClientMessage.Name = "txtClientMessage";
-            this.txtClientMessage.Size = new System.Drawing.Size(706, 20);
+            this.txtClientMessage.Size = new System.Drawing.Size(528, 20);
             this.txtClientMessage.TabIndex = 8;
             this.txtClientMessage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMessage_KeyDown);
             // 
@@ -395,6 +400,24 @@
             this.chServerNickname.Text = "User list";
             this.chServerNickname.Width = 204;
             // 
+            // btnClientTextColor
+            // 
+            this.btnClientTextColor.Location = new System.Drawing.Point(648, 496);
+            this.btnClientTextColor.Name = "btnClientTextColor";
+            this.btnClientTextColor.Size = new System.Drawing.Size(72, 24);
+            this.btnClientTextColor.TabIndex = 15;
+            this.btnClientTextColor.Text = "Color...";
+            this.btnClientTextColor.UseVisualStyleBackColor = true;
+            this.btnClientTextColor.Click += new System.EventHandler(this.btnTextColor_Click);
+            // 
+            // txtClientMessageTo
+            // 
+            this.txtClientMessageTo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtClientMessageTo.Location = new System.Drawing.Point(544, 498);
+            this.txtClientMessageTo.Name = "txtClientMessageTo";
+            this.txtClientMessageTo.Size = new System.Drawing.Size(96, 20);
+            this.txtClientMessageTo.TabIndex = 16;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -450,6 +473,8 @@
         private System.Windows.Forms.Label lblClientPassword;
         private System.Windows.Forms.TextBox txtServerPassword;
         private System.Windows.Forms.Label lblServerPassword;
+        private System.Windows.Forms.Button btnClientTextColor;
+        private System.Windows.Forms.TextBox txtClientMessageTo;
     }
 }
 

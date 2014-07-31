@@ -22,6 +22,8 @@
 
 #endregion License Information (GPL v3)
 
+using System.Drawing;
+
 namespace Chat
 {
     public class MessageInfo
@@ -29,7 +31,7 @@ namespace Chat
         public UserInfo FromUser { get; set; }
         public UserInfo ToUser { get; set; } // If message type is whisper
         public string Text { get; set; }
-        public string Color { get; set; }
+        public Color TextColor { get; set; }
 
         public MessageInfo(string text)
         {

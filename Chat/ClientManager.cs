@@ -24,6 +24,7 @@
 
 using Newtonsoft.Json;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Chat
@@ -149,13 +150,14 @@ namespace Chat
             }
         }
 
-        public void SendMessage(string message, string toUser = "")
+        public void SendMessage(string message, string toUser, Color color)
         {
             if (!string.IsNullOrEmpty(message))
             {
                 PacketInfo packetInfo = new PacketInfo("Message");
                 MessageInfo messageInfo = new MessageInfo(message);
                 if (!string.IsNullOrEmpty(toUser)) messageInfo.ToUser = new UserInfo(toUser);
+                messageInfo.TextColor = color;
                 packetInfo.Data = messageInfo;
                 client.SendPacket(packetInfo);
             }
