@@ -38,6 +38,8 @@
             this.lblClientIP = new System.Windows.Forms.Label();
             this.tcMain = new System.Windows.Forms.TabControl();
             this.tpClient = new System.Windows.Forms.TabPage();
+            this.txtClientMessageTo = new System.Windows.Forms.TextBox();
+            this.btnClientTextColor = new System.Windows.Forms.Button();
             this.txtClientPassword = new System.Windows.Forms.TextBox();
             this.lblClientPassword = new System.Windows.Forms.Label();
             this.nudClientPort = new System.Windows.Forms.NumericUpDown();
@@ -57,8 +59,6 @@
             this.rtbServerConsole = new System.Windows.Forms.RichTextBox();
             this.lvServerUsers = new System.Windows.Forms.ListView();
             this.chServerNickname = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.btnClientTextColor = new System.Windows.Forms.Button();
-            this.txtClientMessageTo = new System.Windows.Forms.TextBox();
             this.tcMain.SuspendLayout();
             this.tpClient.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudClientPort)).BeginInit();
@@ -85,7 +85,7 @@
             this.btnServerStart.TabIndex = 4;
             this.btnServerStart.Text = "Start server";
             this.btnServerStart.UseVisualStyleBackColor = true;
-            this.btnServerStart.Click += new System.EventHandler(this.btnStartServer_Click);
+            this.btnServerStart.Click += new System.EventHandler(this.btnServerStart_Click);
             // 
             // btnClientConnect
             // 
@@ -95,7 +95,7 @@
             this.btnClientConnect.TabIndex = 6;
             this.btnClientConnect.Text = "Connect";
             this.btnClientConnect.UseVisualStyleBackColor = true;
-            this.btnClientConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            this.btnClientConnect.Click += new System.EventHandler(this.btnClientConnect_Click);
             // 
             // txtClientNickname
             // 
@@ -175,6 +175,26 @@
             this.tpClient.TabIndex = 0;
             this.tpClient.Text = "Client";
             this.tpClient.UseVisualStyleBackColor = true;
+            // 
+            // txtClientMessageTo
+            // 
+            this.txtClientMessageTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtClientMessageTo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtClientMessageTo.Location = new System.Drawing.Point(544, 502);
+            this.txtClientMessageTo.Name = "txtClientMessageTo";
+            this.txtClientMessageTo.Size = new System.Drawing.Size(102, 20);
+            this.txtClientMessageTo.TabIndex = 16;
+            // 
+            // btnClientTextColor
+            // 
+            this.btnClientTextColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClientTextColor.Location = new System.Drawing.Point(654, 500);
+            this.btnClientTextColor.Name = "btnClientTextColor";
+            this.btnClientTextColor.Size = new System.Drawing.Size(72, 24);
+            this.btnClientTextColor.TabIndex = 15;
+            this.btnClientTextColor.Text = "Color...";
+            this.btnClientTextColor.UseVisualStyleBackColor = true;
+            this.btnClientTextColor.Click += new System.EventHandler(this.btnClientTextColor_Click);
             // 
             // txtClientPassword
             // 
@@ -260,7 +280,6 @@
             // btnClientSend
             // 
             this.btnClientSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClientSend.Enabled = false;
             this.btnClientSend.Location = new System.Drawing.Point(728, 500);
             this.btnClientSend.Name = "btnClientSend";
             this.btnClientSend.Size = new System.Drawing.Size(72, 24);
@@ -278,7 +297,7 @@
             this.txtClientMessage.Name = "txtClientMessage";
             this.txtClientMessage.Size = new System.Drawing.Size(528, 20);
             this.txtClientMessage.TabIndex = 8;
-            this.txtClientMessage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtMessage_KeyDown);
+            this.txtClientMessage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtClientMessage_KeyDown);
             // 
             // tpServer
             // 
@@ -317,7 +336,6 @@
             // btnServerSend
             // 
             this.btnServerSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnServerSend.Enabled = false;
             this.btnServerSend.Location = new System.Drawing.Point(728, 500);
             this.btnServerSend.Name = "btnServerSend";
             this.btnServerSend.Size = new System.Drawing.Size(72, 24);
@@ -400,26 +418,6 @@
             // 
             this.chServerNickname.Text = "User list";
             this.chServerNickname.Width = 214;
-            // 
-            // btnClientTextColor
-            // 
-            this.btnClientTextColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClientTextColor.Location = new System.Drawing.Point(654, 500);
-            this.btnClientTextColor.Name = "btnClientTextColor";
-            this.btnClientTextColor.Size = new System.Drawing.Size(72, 24);
-            this.btnClientTextColor.TabIndex = 15;
-            this.btnClientTextColor.Text = "Color...";
-            this.btnClientTextColor.UseVisualStyleBackColor = true;
-            this.btnClientTextColor.Click += new System.EventHandler(this.btnTextColor_Click);
-            // 
-            // txtClientMessageTo
-            // 
-            this.txtClientMessageTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtClientMessageTo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtClientMessageTo.Location = new System.Drawing.Point(544, 502);
-            this.txtClientMessageTo.Name = "txtClientMessageTo";
-            this.txtClientMessageTo.Size = new System.Drawing.Size(102, 20);
-            this.txtClientMessageTo.TabIndex = 16;
             // 
             // MainForm
             // 

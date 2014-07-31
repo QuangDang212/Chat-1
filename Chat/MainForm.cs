@@ -22,6 +22,7 @@
 
 #endregion License Information (GPL v3)
 
+using Chat.Properties;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -32,14 +33,83 @@ namespace Chat
 {
     public partial class MainForm : Form
     {
-        public Color TextColor { get; set; }
+        private bool clientConnected;
 
-        private ServerManager server;
+        public bool ClientConnected
+        {
+            get
+            {
+                return clientConnected;
+            }
+            set
+            {
+                clientConnected = value;
+
+                if (clientConnected)
+                {
+                    btnClientConnect.Text = "Disconnect";
+                }
+                else
+                {
+                    btnClientConnect.Text = "Connect";
+                    lvClientUsers.Items.Clear();
+                }
+
+                btnClientSend.Enabled = clientConnected;
+            }
+        }
+
+        private bool serverConnected;
+
+        public bool ServerConnected
+        {
+            get
+            {
+                return serverConnected;
+            }
+            set
+            {
+                serverConnected = value;
+
+                if (serverConnected)
+                {
+                    btnServerStart.Text = "Stop server";
+                }
+                else
+                {
+                    btnServerStart.Text = "Start server";
+                    lvServerUsers.Items.Clear();
+                }
+
+                btnServerSend.Enabled = serverConnected;
+            }
+        }
+
+        private Color textColor;
+
+        public Color TextColor
+        {
+            get
+            {
+                return textColor;
+            }
+            set
+            {
+                textColor = value;
+                txtClientMessage.ForeColor = textColor;
+            }
+        }
+
         private ClientManager client;
+        private ServerManager server;
 
         public MainForm()
         {
             InitializeComponent();
+            Icon = Resources.Icon;
+
+            ClientConnected = false;
+            ServerConnected = false;
             TextColor = Color.Black;
         }
 
@@ -53,6 +123,42 @@ namespace Chat
             {
                 action();
             }
+        }
+
+        #region Client functions
+
+        private void ClientConnect()
+        {
+            if (!string.IsNullOrEmpty(txtClientIP.Text) && nudClientPort.Value > 0 && !string.IsNullOrEmpty(txtClientNickname.Text))
+            {
+                client = new ClientManager(txtClientIP.Text, (int)nudClientPort.Value, txtClientNickname.Text);
+                client.Connect(txtClientPassword.Text);
+
+                if (client != null && client.IsConnected)
+                {
+                    client.Notification += client_Notification;
+                    client.MessageReceived += client_MessageReceived;
+                    client.UserConnected += client_UserConnected;
+                    client.UserDisconnected += client_UserDisconnected;
+                    client.UserListReceived += client_UserListReceived;
+                    client.Kicked += client_Kicked;
+
+                    ClientConnected = true;
+                }
+            }
+        }
+
+        private void ClientDisconnect()
+        {
+            if (client != null && client.IsConnected)
+            {
+                client.Disconnect();
+            }
+
+            InvokeForm(() =>
+            {
+                ClientConnected = false;
+            });
         }
 
         private void AddClientMessage(string message)
@@ -84,18 +190,6 @@ namespace Chat
             });
         }
 
-        private void AddServerMessage(string message)
-        {
-            InvokeForm(() =>
-            {
-                rtbServerConsole.SelectionColor = Color.Gray;
-                rtbServerConsole.AppendText(DateTime.Now.ToLongTimeString() + " ");
-                rtbServerConsole.SelectionColor = Color.Black;
-                rtbServerConsole.AppendText(message + Environment.NewLine);
-                rtbServerConsole.ScrollToCaret();
-            });
-        }
-
         private void ClientSendMessage()
         {
             if (client != null && client.IsConnected)
@@ -103,74 +197,6 @@ namespace Chat
                 client.SendMessage(txtClientMessage.Text, txtClientMessageTo.Text, TextColor);
                 txtClientMessage.ResetText();
             }
-        }
-
-        private void ServerSendMessage()
-        {
-            if (server != null && server.IsWorking)
-            {
-                server.SendMessageToAll("Admin", txtServerMessage.Text);
-                txtServerMessage.ResetText();
-            }
-        }
-
-        private void btnStartServer_Click(object sender, EventArgs e)
-        {
-            btnServerStart.Enabled = false;
-
-            if (btnServerStart.Text == "Start server")
-            {
-                if (nudServerPort.Value > 0)
-                {
-                    btnServerStart.Text = "Stop server";
-                    server = new ServerManager((int)nudServerPort.Value, txtServerPassword.Text);
-                    server.ConsoleOutput += server_ConsoleOutput;
-                    server.UserConnected += server_UserConnected;
-                    server.UserDisconnected += server_UserDisconnected;
-                    server.StartServer();
-                    btnServerSend.Enabled = true;
-                }
-            }
-            else
-            {
-                btnServerStart.Text = "Start server";
-                server.StopServer();
-                btnServerSend.Enabled = false;
-            }
-
-            btnServerStart.Enabled = true;
-        }
-
-        private void server_ConsoleOutput(string text)
-        {
-            AddServerMessage(text);
-        }
-
-        private void server_UserConnected(UserInfo userInfo)
-        {
-            InvokeForm(() =>
-            {
-                lvServerUsers.Items.Add(userInfo.Nickname);
-            });
-        }
-
-        private void server_UserDisconnected(UserInfo userInfo)
-        {
-            InvokeForm(() =>
-            {
-                ListViewItem lvi = ServerFindUser(userInfo);
-                if (lvi != null) lvi.Remove();
-            });
-        }
-
-        private ListViewItem ServerFindUser(UserInfo userInfo)
-        {
-            foreach (ListViewItem lvi in lvServerUsers.Items)
-            {
-                if (lvi.Text == userInfo.Nickname) return lvi;
-            }
-
-            return null;
         }
 
         private ListViewItem ClientFindUser(UserInfo userInfo)
@@ -183,29 +209,81 @@ namespace Chat
             return null;
         }
 
-        private void btnConnect_Click(object sender, EventArgs e)
+        #endregion Client functions
+
+        #region Server functions
+
+        private void StartServer()
+        {
+            if (nudServerPort.Value > 0)
+            {
+                server = new ServerManager((int)nudServerPort.Value, txtServerPassword.Text);
+                server.ConsoleOutput += server_ConsoleOutput;
+                server.UserConnected += server_UserConnected;
+                server.UserDisconnected += server_UserDisconnected;
+                server.StartServer();
+
+                ServerConnected = true;
+            }
+        }
+
+        private void StopServer()
+        {
+            if (server != null)
+            {
+                server.StopServer();
+            }
+
+            ServerConnected = false;
+        }
+
+        private void AddServerMessage(string message)
+        {
+            InvokeForm(() =>
+            {
+                rtbServerConsole.SelectionColor = Color.Gray;
+                rtbServerConsole.AppendText(DateTime.Now.ToLongTimeString() + " ");
+                rtbServerConsole.SelectionColor = Color.Black;
+                rtbServerConsole.AppendText(message + Environment.NewLine);
+                rtbServerConsole.ScrollToCaret();
+            });
+        }
+
+        private void ServerSendMessage()
+        {
+            if (server != null && server.IsWorking)
+            {
+                server.SendMessageToAll("Admin", txtServerMessage.Text);
+                txtServerMessage.ResetText();
+            }
+        }
+
+        private ListViewItem ServerFindUser(UserInfo userInfo)
+        {
+            foreach (ListViewItem lvi in lvServerUsers.Items)
+            {
+                if (lvi.Text == userInfo.Nickname) return lvi;
+            }
+
+            return null;
+        }
+
+        #endregion Server functions
+
+        #region Form events
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            this.Refresh();
+        }
+
+        private void btnClientConnect_Click(object sender, EventArgs e)
         {
             btnClientConnect.Enabled = false;
 
-            if (btnClientConnect.Text == "Connect")
+            if (!ClientConnected)
             {
-                if (!string.IsNullOrEmpty(txtClientIP.Text) && nudClientPort.Value > 0 && !string.IsNullOrEmpty(txtClientNickname.Text))
-                {
-                    client = new ClientManager(txtClientIP.Text, (int)nudClientPort.Value, txtClientNickname.Text);
-                    client.Connect(txtClientPassword.Text);
-
-                    if (client != null && client.IsConnected)
-                    {
-                        client.Notification += new ClientManager.StringEventHandler(client_Notification);
-                        client.MessageReceived += new ClientManager.MessageEventHandler(client_MessageReceived);
-                        client.UserConnected += client_UserConnected;
-                        client.UserDisconnected += client_UserDisconnected;
-                        client.UserListReceived += client_UserListReceived;
-                        client.Kicked += client_Kicked;
-                        btnClientConnect.Text = "Disconnect";
-                        btnClientSend.Enabled = true;
-                    }
-                }
+                ClientConnect();
             }
             else
             {
@@ -215,20 +293,79 @@ namespace Chat
             btnClientConnect.Enabled = true;
         }
 
-        private void ClientDisconnect()
+        private void rtbClientChat_LinkClicked(object sender, LinkClickedEventArgs e)
         {
-            if (client != null && client.IsConnected)
+            Process.Start(e.LinkText);
+        }
+
+        private void lvClientUsers_DoubleClick(object sender, EventArgs e)
+        {
+            if (lvClientUsers.SelectedItems.Count > 0)
             {
-                client.Disconnect();
+                txtClientMessageTo.Text = lvClientUsers.SelectedItems[0].Text;
+            }
+        }
+
+        private void txtClientMessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                ClientSendMessage();
+            }
+        }
+
+        private void btnClientTextColor_Click(object sender, EventArgs e)
+        {
+            using (ColorDialog colorDialog = new ColorDialog())
+            {
+                colorDialog.Color = TextColor;
+
+                if (colorDialog.ShowDialog() == DialogResult.OK)
+                {
+                    TextColor = colorDialog.Color;
+                }
+            }
+        }
+
+        private void btnClientSend_Click(object sender, EventArgs e)
+        {
+            ClientSendMessage();
+        }
+
+        private void btnServerStart_Click(object sender, EventArgs e)
+        {
+            btnServerStart.Enabled = false;
+
+            if (!ServerConnected)
+            {
+                StartServer();
+            }
+            else
+            {
+                StopServer();
             }
 
-            InvokeForm(() =>
-            {
-                lvClientUsers.Items.Clear();
-                btnClientConnect.Text = "Connect";
-                btnClientSend.Enabled = false;
-            });
+            btnServerStart.Enabled = true;
         }
+
+        private void txtServerMessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                ServerSendMessage();
+            }
+        }
+
+        private void btnServerSend_Click(object sender, EventArgs e)
+        {
+            ServerSendMessage();
+        }
+
+        #endregion Form events
+
+        #region Client events
 
         private void client_UserConnected(UserInfo userInfo)
         {
@@ -291,64 +428,32 @@ namespace Chat
             AddClientMessage(user, messageInfo.Text, messageInfo.TextColor);
         }
 
-        private void txtMessage_KeyDown(object sender, KeyEventArgs e)
+        #endregion Client events
+
+        #region Server events
+
+        private void server_ConsoleOutput(string text)
         {
-            if (e.KeyCode == Keys.Enter)
+            AddServerMessage(text);
+        }
+
+        private void server_UserConnected(UserInfo userInfo)
+        {
+            InvokeForm(() =>
             {
-                e.SuppressKeyPress = true;
-                ClientSendMessage();
-            }
+                lvServerUsers.Items.Add(userInfo.Nickname);
+            });
         }
 
-        private void btnClientSend_Click(object sender, EventArgs e)
+        private void server_UserDisconnected(UserInfo userInfo)
         {
-            ClientSendMessage();
-        }
-
-        private void txtServerMessage_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
+            InvokeForm(() =>
             {
-                e.SuppressKeyPress = true;
-                ServerSendMessage();
-            }
+                ListViewItem lvi = ServerFindUser(userInfo);
+                if (lvi != null) lvi.Remove();
+            });
         }
 
-        private void btnServerSend_Click(object sender, EventArgs e)
-        {
-            ServerSendMessage();
-        }
-
-        private void MainForm_Resize(object sender, EventArgs e)
-        {
-            this.Refresh();
-        }
-
-        private void rtbClientChat_LinkClicked(object sender, LinkClickedEventArgs e)
-        {
-            Process.Start(e.LinkText);
-        }
-
-        private void btnTextColor_Click(object sender, EventArgs e)
-        {
-            using (ColorDialog colorDialog = new ColorDialog())
-            {
-                colorDialog.Color = TextColor;
-
-                if (colorDialog.ShowDialog() == DialogResult.OK)
-                {
-                    TextColor = colorDialog.Color;
-                    txtClientMessage.ForeColor = TextColor;
-                }
-            }
-        }
-
-        private void lvClientUsers_DoubleClick(object sender, EventArgs e)
-        {
-            if (lvClientUsers.SelectedItems.Count > 0)
-            {
-                txtClientMessageTo.Text = lvClientUsers.SelectedItems[0].Text;
-            }
-        }
+        #endregion Server events
     }
 }
