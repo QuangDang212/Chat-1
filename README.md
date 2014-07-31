@@ -1,4 +1,4 @@
 Chat
 ====
 
-![](http://i.imgur.com/HKS5lrG.png)
+![](http://i.imgur.com/LZngfQx.png)

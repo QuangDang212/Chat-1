@@ -33,10 +33,10 @@ namespace Chat
 {
     public class Client
     {
-        public delegate void StringEventHandler(object sender, string text);
+        public delegate void StringEventHandler(Client client, string text);
         public event StringEventHandler MessageReceived;
 
-        public delegate void DisconnectEventHandler(object sender, string reason);
+        public delegate void DisconnectEventHandler(Client client, string reason);
         public event DisconnectEventHandler Disconnected;
 
         public bool Authorized { get; set; }
@@ -69,7 +69,7 @@ namespace Chat
 
         public void Disconnect()
         {
-            OnDisconnected(this, "User disconnected.");
+            OnDisconnected("User disconnected.");
             client.Close();
         }
 
@@ -94,7 +94,7 @@ namespace Chat
                 }
                 catch (Exception e)
                 {
-                    OnDisconnected(this, e.Message);
+                    OnDisconnected(e.Message);
                     return;
                 }
 
@@ -117,12 +117,13 @@ namespace Chat
             }
         }
 
-        protected void OnDisconnected(object sender, string reason)
+        protected void OnDisconnected(string reason)
         {
             isConnected = false;
+
             if (Disconnected != null)
             {
-                Disconnected(sender, reason);
+                Disconnected(this, reason);
             }
         }
 

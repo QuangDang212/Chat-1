@@ -72,8 +72,8 @@ namespace Chat
             {
                 client = new Client(IPAddress, Port);
                 client.UserInfo.Nickname = Nickname;
-                client.MessageReceived += new Client.StringEventHandler(client_MessageReceived);
-                client.Disconnected += new Client.DisconnectEventHandler(client_Disconnected);
+                client.MessageReceived += client_MessageReceived;
+                client.Disconnected += client_Disconnected;
                 PacketInfo packetInfo = new PacketInfo("Connect");
                 packetInfo.AddParameter("Nickname", Nickname);
                 if (!string.IsNullOrEmpty(password)) packetInfo.AddParameter("Password", password);
@@ -86,7 +86,7 @@ namespace Chat
             }
         }
 
-        private void client_Disconnected(object sender, string reason)
+        private void client_Disconnected(Client client, string reason)
         {
             IsConnected = IsAuthenticated = false;
             OnNotification("Disconnected.");
@@ -120,7 +120,7 @@ namespace Chat
             if (Kicked != null) Kicked(reason);
         }
 
-        private void client_MessageReceived(object sender, string text)
+        private void client_MessageReceived(Client client, string text)
         {
             PacketInfo packetInfo = JsonConvert.DeserializeObject<PacketInfo>(text);
 

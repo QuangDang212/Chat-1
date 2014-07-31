@@ -79,15 +79,14 @@ namespace Chat
 
         private void ListenThread()
         {
-            TcpClient incomingClient;
             while (IsWorking)
             {
                 try
                 {
-                    incomingClient = tcpListener.AcceptTcpClient();
+                    TcpClient incomingClient = tcpListener.AcceptTcpClient();
                     Client client = new Client(incomingClient);
-                    client.MessageReceived += new Client.StringEventHandler(client_MessageReceived);
-                    client.Disconnected += new Client.DisconnectEventHandler(client_Disconnected);
+                    client.MessageReceived += client_MessageReceived;
+                    client.Disconnected += ClientDisconnected;
                     OnConsoleOutput(string.Format("Client connected: {0}", client.IP));
                 }
                 catch (SocketException)
@@ -118,11 +117,6 @@ namespace Chat
             {
                 UserDisconnected(userInfo);
             }
-        }
-
-        private void client_Disconnected(object sender, string reason)
-        {
-            ClientDisconnected((Client)sender, reason);
         }
 
         private bool ClientConnect(Client client, string password = "")
@@ -177,49 +171,68 @@ namespace Chat
             }
         }
 
-        private void client_MessageReceived(object sender, string text)
+        private void client_MessageReceived(Client client, string text)
         {
-            Client client = sender as Client;
+            OnConsoleOutput(string.Format("{0} {1}: {2}", client.UserInfo.Nickname, client.IP, text));
 
-            if (client != null)
+            PacketInfo packetInfo;
+
+            try
             {
-                OnConsoleOutput(string.Format("{0} {1}: {2}", client.UserInfo.Nickname, client.IP, text));
+                packetInfo = JsonConvert.DeserializeObject<PacketInfo>(text);
+            }
+            catch
+            {
+                return;
+            }
 
-                PacketInfo packetInfo = JsonConvert.DeserializeObject<PacketInfo>(text);
-
-                switch (packetInfo.Command)
+            if (packetInfo != null)
+            {
+                if (packetInfo.Command == "Connect")
                 {
-                    case "Connect":
-                        client.UserInfo.Nickname = packetInfo.Parameters["Nickname"];
-                        string password = "";
-                        if (packetInfo.Parameters.ContainsKey("Password"))
-                        {
-                            password = packetInfo.Parameters["Password"];
-                        }
-                        ClientConnect(client, password);
-                        break;
-                    case "Disconnect":
-                        ClientDisconnected(client, packetInfo.Parameters["Reason"]);
-                        break;
-                    case "Message":
-                        if (client.Authorized)
-                        {
-                            PacketInfo packetInfoMessage = new PacketInfo("Message");
-                            MessageInfo messageInfo = packetInfo.GetData<MessageInfo>();
-                            messageInfo.FromUser = client.UserInfo;
-                            packetInfoMessage.Data = messageInfo;
+                    client.UserInfo.Nickname = packetInfo.Parameters["Nickname"];
 
-                            if (messageInfo.ToUser != null && !string.IsNullOrEmpty(messageInfo.ToUser.Nickname))
+                    string password = "";
+                    if (packetInfo.Parameters.ContainsKey("Password"))
+                    {
+                        password = packetInfo.Parameters["Password"];
+                    }
+
+                    ClientConnect(client, password);
+                }
+                else if (client.Authorized)
+                {
+                    switch (packetInfo.Command)
+                    {
+                        case "Disconnect":
+                            string reason = "";
+                            if (packetInfo.Parameters.ContainsKey("Reason"))
                             {
-                                SendTo(messageInfo.ToUser, packetInfoMessage);
-                                SendTo(messageInfo.FromUser, packetInfoMessage);
+                                reason = packetInfo.Parameters["Reason"];
                             }
-                            else
+
+                            ClientDisconnected(client, reason);
+                            break;
+                        case "Message":
+                            if (client.Authorized)
                             {
-                                SendToAll(packetInfoMessage);
+                                PacketInfo packetInfoMessage = new PacketInfo("Message");
+                                MessageInfo messageInfo = packetInfo.GetData<MessageInfo>();
+                                messageInfo.FromUser = client.UserInfo;
+                                packetInfoMessage.Data = messageInfo;
+
+                                if (messageInfo.ToUser != null && !string.IsNullOrEmpty(messageInfo.ToUser.Nickname))
+                                {
+                                    SendTo(messageInfo.ToUser, packetInfoMessage);
+                                    SendTo(messageInfo.FromUser, packetInfoMessage);
+                                }
+                                else
+                                {
+                                    SendToAll(packetInfoMessage);
+                                }
                             }
-                        }
-                        break;
+                            break;
+                    }
                 }
             }
         }
