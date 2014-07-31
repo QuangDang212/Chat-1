@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.lblServerPort = new System.Windows.Forms.Label();
             this.btnServerStart = new System.Windows.Forms.Button();
             this.btnClientConnect = new System.Windows.Forms.Button();
@@ -39,7 +40,7 @@
             this.tcMain = new System.Windows.Forms.TabControl();
             this.tpClient = new System.Windows.Forms.TabPage();
             this.txtClientMessageTo = new System.Windows.Forms.TextBox();
-            this.btnClientTextColor = new System.Windows.Forms.Button();
+            this.btnClientCommands = new System.Windows.Forms.Button();
             this.txtClientPassword = new System.Windows.Forms.TextBox();
             this.lblClientPassword = new System.Windows.Forms.Label();
             this.nudClientPort = new System.Windows.Forms.NumericUpDown();
@@ -59,6 +60,9 @@
             this.rtbServerConsole = new System.Windows.Forms.RichTextBox();
             this.lvServerUsers = new System.Windows.Forms.ListView();
             this.chServerNickname = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.cmsClientCommands = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiClientTextColor = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiClientSendPing = new System.Windows.Forms.ToolStripMenuItem();
             this.tcMain.SuspendLayout();
             this.tpClient.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudClientPort)).BeginInit();
@@ -66,6 +70,7 @@
             this.tpServer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudServerPort)).BeginInit();
             this.pServerConsole.SuspendLayout();
+            this.cmsClientCommands.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblServerPort
@@ -154,7 +159,7 @@
             // tpClient
             // 
             this.tpClient.Controls.Add(this.txtClientMessageTo);
-            this.tpClient.Controls.Add(this.btnClientTextColor);
+            this.tpClient.Controls.Add(this.btnClientCommands);
             this.tpClient.Controls.Add(this.txtClientPassword);
             this.tpClient.Controls.Add(this.lblClientPassword);
             this.tpClient.Controls.Add(this.nudClientPort);
@@ -180,21 +185,21 @@
             // 
             this.txtClientMessageTo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.txtClientMessageTo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtClientMessageTo.Location = new System.Drawing.Point(544, 502);
+            this.txtClientMessageTo.Location = new System.Drawing.Point(586, 502);
             this.txtClientMessageTo.Name = "txtClientMessageTo";
             this.txtClientMessageTo.Size = new System.Drawing.Size(102, 20);
             this.txtClientMessageTo.TabIndex = 16;
             // 
-            // btnClientTextColor
+            // btnClientCommands
             // 
-            this.btnClientTextColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClientTextColor.Location = new System.Drawing.Point(654, 500);
-            this.btnClientTextColor.Name = "btnClientTextColor";
-            this.btnClientTextColor.Size = new System.Drawing.Size(72, 24);
-            this.btnClientTextColor.TabIndex = 15;
-            this.btnClientTextColor.Text = "Color...";
-            this.btnClientTextColor.UseVisualStyleBackColor = true;
-            this.btnClientTextColor.Click += new System.EventHandler(this.btnClientTextColor_Click);
+            this.btnClientCommands.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClientCommands.Location = new System.Drawing.Point(694, 500);
+            this.btnClientCommands.Name = "btnClientCommands";
+            this.btnClientCommands.Size = new System.Drawing.Size(30, 24);
+            this.btnClientCommands.TabIndex = 15;
+            this.btnClientCommands.Text = "...";
+            this.btnClientCommands.UseVisualStyleBackColor = true;
+            this.btnClientCommands.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnClientCommands_MouseClick);
             // 
             // txtClientPassword
             // 
@@ -295,7 +300,7 @@
             this.txtClientMessage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtClientMessage.Location = new System.Drawing.Point(8, 502);
             this.txtClientMessage.Name = "txtClientMessage";
-            this.txtClientMessage.Size = new System.Drawing.Size(528, 20);
+            this.txtClientMessage.Size = new System.Drawing.Size(570, 20);
             this.txtClientMessage.TabIndex = 8;
             this.txtClientMessage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtClientMessage_KeyDown);
             // 
@@ -419,6 +424,29 @@
             this.chServerNickname.Text = "User list";
             this.chServerNickname.Width = 214;
             // 
+            // cmsClientCommands
+            // 
+            this.cmsClientCommands.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiClientTextColor,
+            this.tsmiClientSendPing});
+            this.cmsClientCommands.Name = "cmsClientCommands";
+            this.cmsClientCommands.ShowImageMargin = false;
+            this.cmsClientCommands.Size = new System.Drawing.Size(152, 70);
+            // 
+            // tsmiClientTextColor
+            // 
+            this.tsmiClientTextColor.Name = "tsmiClientTextColor";
+            this.tsmiClientTextColor.Size = new System.Drawing.Size(151, 22);
+            this.tsmiClientTextColor.Text = "Change text color...";
+            this.tsmiClientTextColor.Click += new System.EventHandler(this.tsmiClientTextColor_Click);
+            // 
+            // tsmiClientSendPing
+            // 
+            this.tsmiClientSendPing.Name = "tsmiClientSendPing";
+            this.tsmiClientSendPing.Size = new System.Drawing.Size(151, 22);
+            this.tsmiClientSendPing.Text = "Send ping";
+            this.tsmiClientSendPing.Click += new System.EventHandler(this.tsmiClientSendPing_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -439,6 +467,7 @@
             this.tpServer.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudServerPort)).EndInit();
             this.pServerConsole.ResumeLayout(false);
+            this.cmsClientCommands.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -474,8 +503,11 @@
         private System.Windows.Forms.Label lblClientPassword;
         private System.Windows.Forms.TextBox txtServerPassword;
         private System.Windows.Forms.Label lblServerPassword;
-        private System.Windows.Forms.Button btnClientTextColor;
+        private System.Windows.Forms.Button btnClientCommands;
         private System.Windows.Forms.TextBox txtClientMessageTo;
+        private System.Windows.Forms.ContextMenuStrip cmsClientCommands;
+        private System.Windows.Forms.ToolStripMenuItem tsmiClientTextColor;
+        private System.Windows.Forms.ToolStripMenuItem tsmiClientSendPing;
     }
 }
 

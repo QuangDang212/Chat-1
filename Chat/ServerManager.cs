@@ -232,6 +232,9 @@ namespace Chat
                                 }
                             }
                             break;
+                        case "Ping":
+                            SendTo(client.UserInfo, new PacketInfo("Pong"));
+                            break;
                     }
                 }
             }

@@ -25,6 +25,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -50,6 +51,8 @@ namespace Chat
         public delegate void KickedEventHandler(string reason);
         public event KickedEventHandler Kicked;
 
+        public event Action<long> Pong;
+
         public bool IsConnected { get; private set; }
         public bool IsAuthenticated { get; private set; }
 
@@ -58,6 +61,7 @@ namespace Chat
         public string Nickname { get; set; }
 
         private Client client;
+        private Stopwatch pingTimer;
 
         public ClientManager(string ip, int port, string nickname)
         {
@@ -120,6 +124,11 @@ namespace Chat
             if (Kicked != null) Kicked(reason);
         }
 
+        private void OnPong(long elapsed)
+        {
+            if (Pong != null) Pong(elapsed);
+        }
+
         private void client_MessageReceived(Client client, string text)
         {
             PacketInfo packetInfo = JsonConvert.DeserializeObject<PacketInfo>(text);
@@ -148,6 +157,9 @@ namespace Chat
                     string kickReason = packetInfo.Parameters["Reason"];
                     OnKicked(kickReason);
                     break;
+                case "Pong":
+                    OnPong(pingTimer.ElapsedMilliseconds);
+                    break;
             }
         }
 
@@ -162,6 +174,13 @@ namespace Chat
                 packetInfo.Data = messageInfo;
                 client.SendPacket(packetInfo);
             }
+        }
+
+        public void SendPing()
+        {
+            pingTimer = Stopwatch.StartNew();
+            PacketInfo packetInfo = new PacketInfo("Ping");
+            client.SendPacket(packetInfo);
         }
 
         protected void OnNotification(string text)

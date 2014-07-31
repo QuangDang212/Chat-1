@@ -55,7 +55,7 @@ namespace Chat
                     lvClientUsers.Items.Clear();
                 }
 
-                btnClientSend.Enabled = clientConnected;
+                btnClientCommands.Enabled = btnClientSend.Enabled = clientConnected;
             }
         }
 
@@ -142,6 +142,7 @@ namespace Chat
                     client.UserDisconnected += client_UserDisconnected;
                     client.UserListReceived += client_UserListReceived;
                     client.Kicked += client_Kicked;
+                    client.Pong += client_Pong;
 
                     ClientConnected = true;
                 }
@@ -315,7 +316,15 @@ namespace Chat
             }
         }
 
-        private void btnClientTextColor_Click(object sender, EventArgs e)
+        private void btnClientCommands_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                cmsClientCommands.Show(btnClientCommands, e.X, e.Y);
+            }
+        }
+
+        private void tsmiClientTextColor_Click(object sender, EventArgs e)
         {
             using (ColorDialog colorDialog = new ColorDialog())
             {
@@ -326,6 +335,11 @@ namespace Chat
                     TextColor = colorDialog.Color;
                 }
             }
+        }
+
+        private void tsmiClientSendPing_Click(object sender, EventArgs e)
+        {
+            client.SendPing();
         }
 
         private void btnClientSend_Click(object sender, EventArgs e)
@@ -410,6 +424,11 @@ namespace Chat
         {
             AddClientMessage("Kicked: " + reason);
             ClientDisconnect();
+        }
+
+        private void client_Pong(long elapsed)
+        {
+            AddClientMessage("Pong: " + elapsed + "ms");
         }
 
         private void client_MessageReceived(MessageInfo messageInfo)
