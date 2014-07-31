@@ -63,6 +63,8 @@
             this.cmsClientCommands = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiClientTextColor = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiClientSendPing = new System.Windows.Forms.ToolStripMenuItem();
+            this.txtServerNickname = new System.Windows.Forms.TextBox();
+            this.lblServerNickname = new System.Windows.Forms.Label();
             this.tcMain.SuspendLayout();
             this.tpClient.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudClientPort)).BeginInit();
@@ -84,7 +86,7 @@
             // 
             // btnServerStart
             // 
-            this.btnServerStart.Location = new System.Drawing.Point(296, 11);
+            this.btnServerStart.Location = new System.Drawing.Point(480, 11);
             this.btnServerStart.Name = "btnServerStart";
             this.btnServerStart.Size = new System.Drawing.Size(96, 23);
             this.btnServerStart.TabIndex = 4;
@@ -306,6 +308,8 @@
             // 
             // tpServer
             // 
+            this.tpServer.Controls.Add(this.txtServerNickname);
+            this.tpServer.Controls.Add(this.lblServerNickname);
             this.tpServer.Controls.Add(this.txtServerPassword);
             this.tpServer.Controls.Add(this.lblServerPassword);
             this.tpServer.Controls.Add(this.btnServerSend);
@@ -324,7 +328,7 @@
             // 
             // txtServerPassword
             // 
-            this.txtServerPassword.Location = new System.Drawing.Point(176, 12);
+            this.txtServerPassword.Location = new System.Drawing.Point(360, 12);
             this.txtServerPassword.Name = "txtServerPassword";
             this.txtServerPassword.Size = new System.Drawing.Size(112, 20);
             this.txtServerPassword.TabIndex = 13;
@@ -332,7 +336,7 @@
             // lblServerPassword
             // 
             this.lblServerPassword.AutoSize = true;
-            this.lblServerPassword.Location = new System.Drawing.Point(112, 16);
+            this.lblServerPassword.Location = new System.Drawing.Point(296, 16);
             this.lblServerPassword.Name = "lblServerPassword";
             this.lblServerPassword.Size = new System.Drawing.Size(56, 13);
             this.lblServerPassword.TabIndex = 12;
@@ -431,7 +435,7 @@
             this.tsmiClientSendPing});
             this.cmsClientCommands.Name = "cmsClientCommands";
             this.cmsClientCommands.ShowImageMargin = false;
-            this.cmsClientCommands.Size = new System.Drawing.Size(152, 70);
+            this.cmsClientCommands.Size = new System.Drawing.Size(152, 48);
             // 
             // tsmiClientTextColor
             // 
@@ -446,6 +450,23 @@
             this.tsmiClientSendPing.Size = new System.Drawing.Size(151, 22);
             this.tsmiClientSendPing.Text = "Send ping";
             this.tsmiClientSendPing.Click += new System.EventHandler(this.tsmiClientSendPing_Click);
+            // 
+            // txtServerNickname
+            // 
+            this.txtServerNickname.Location = new System.Drawing.Point(176, 12);
+            this.txtServerNickname.Name = "txtServerNickname";
+            this.txtServerNickname.Size = new System.Drawing.Size(112, 20);
+            this.txtServerNickname.TabIndex = 15;
+            this.txtServerNickname.Text = "Admin";
+            // 
+            // lblServerNickname
+            // 
+            this.lblServerNickname.AutoSize = true;
+            this.lblServerNickname.Location = new System.Drawing.Point(112, 16);
+            this.lblServerNickname.Name = "lblServerNickname";
+            this.lblServerNickname.Size = new System.Drawing.Size(58, 13);
+            this.lblServerNickname.TabIndex = 14;
+            this.lblServerNickname.Text = "Nickname:";
             // 
             // MainForm
             // 
@@ -508,6 +529,8 @@
         private System.Windows.Forms.ContextMenuStrip cmsClientCommands;
         private System.Windows.Forms.ToolStripMenuItem tsmiClientTextColor;
         private System.Windows.Forms.ToolStripMenuItem tsmiClientSendPing;
+        private System.Windows.Forms.TextBox txtServerNickname;
+        private System.Windows.Forms.Label lblServerNickname;
     }
 }
 

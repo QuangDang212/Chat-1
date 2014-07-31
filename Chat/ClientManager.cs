@@ -158,7 +158,10 @@ namespace Chat
                     OnKicked(kickReason);
                     break;
                 case "Pong":
-                    OnPong(pingTimer.ElapsedMilliseconds);
+                    if (pingTimer != null)
+                    {
+                        OnPong(pingTimer.ElapsedMilliseconds);
+                    }
                     break;
             }
         }
@@ -179,8 +182,7 @@ namespace Chat
         public void SendPing()
         {
             pingTimer = Stopwatch.StartNew();
-            PacketInfo packetInfo = new PacketInfo("Ping");
-            client.SendPacket(packetInfo);
+            client.SendPacket(new PacketInfo("Ping"));
         }
 
         protected void OnNotification(string text)

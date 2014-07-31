@@ -47,13 +47,15 @@ namespace Chat
         public List<Client> Clients { get; private set; }
 
         public int Port { get; set; }
+        public string Nickname { get; set; }
         public string Password { get; set; }
 
         private TcpListener tcpListener;
 
-        public ServerManager(int port, string password = "")
+        public ServerManager(int port, string nickname, string password = "")
         {
             Port = port;
+            Nickname = string.IsNullOrEmpty(nickname) ? "Admin" : nickname;
             Password = password;
         }
 
@@ -129,7 +131,7 @@ namespace Chat
 
             string nickname = client.UserInfo.Nickname;
 
-            if (string.IsNullOrEmpty(nickname) || nickname.Equals("Admin", StringComparison.InvariantCultureIgnoreCase))
+            if (string.IsNullOrEmpty(nickname) || nickname.Equals(Nickname, StringComparison.InvariantCultureIgnoreCase))
             {
                 KickClient(client, "Invalid nickname.");
                 return false;
@@ -282,9 +284,14 @@ namespace Chat
             return false;
         }
 
+        public void SendMessageToAll(string message)
+        {
+            SendMessageToAll(Nickname, message);
+        }
+
         public void SendMessageToAll(string nickname, string message)
         {
-            if (!string.IsNullOrEmpty(message))
+            if (!string.IsNullOrEmpty(nickname) && !string.IsNullOrEmpty(message))
             {
                 PacketInfo packetInfoMessage = new PacketInfo("Message");
                 MessageInfo messageInfo = new MessageInfo(message);

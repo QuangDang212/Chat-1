@@ -55,6 +55,7 @@ namespace Chat
                     lvClientUsers.Items.Clear();
                 }
 
+                txtClientIP.Enabled = nudClientPort.Enabled = txtClientNickname.Enabled = txtClientPassword.Enabled = !clientConnected;
                 btnClientCommands.Enabled = btnClientSend.Enabled = clientConnected;
             }
         }
@@ -81,6 +82,7 @@ namespace Chat
                     lvServerUsers.Items.Clear();
                 }
 
+                nudServerPort.Enabled = txtServerNickname.Enabled = txtServerPassword.Enabled = !serverConnected;
                 btnServerSend.Enabled = serverConnected;
             }
         }
@@ -216,9 +218,9 @@ namespace Chat
 
         private void StartServer()
         {
-            if (nudServerPort.Value > 0)
+            if (nudServerPort.Value > 0 && !string.IsNullOrEmpty(txtServerNickname.Text))
             {
-                server = new ServerManager((int)nudServerPort.Value, txtServerPassword.Text);
+                server = new ServerManager((int)nudServerPort.Value, txtServerNickname.Text, txtServerPassword.Text);
                 server.ConsoleOutput += server_ConsoleOutput;
                 server.UserConnected += server_UserConnected;
                 server.UserDisconnected += server_UserDisconnected;
@@ -254,7 +256,7 @@ namespace Chat
         {
             if (server != null && server.IsWorking)
             {
-                server.SendMessageToAll("Admin", txtServerMessage.Text);
+                server.SendMessageToAll(txtServerMessage.Text);
                 txtServerMessage.ResetText();
             }
         }
