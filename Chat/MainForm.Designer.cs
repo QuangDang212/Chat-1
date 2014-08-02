@@ -51,6 +51,8 @@
             this.btnClientSend = new System.Windows.Forms.Button();
             this.txtClientMessage = new System.Windows.Forms.TextBox();
             this.tpServer = new System.Windows.Forms.TabPage();
+            this.txtServerNickname = new System.Windows.Forms.TextBox();
+            this.lblServerNickname = new System.Windows.Forms.Label();
             this.txtServerPassword = new System.Windows.Forms.TextBox();
             this.lblServerPassword = new System.Windows.Forms.Label();
             this.btnServerSend = new System.Windows.Forms.Button();
@@ -63,8 +65,6 @@
             this.cmsClientCommands = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiClientTextColor = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiClientSendPing = new System.Windows.Forms.ToolStripMenuItem();
-            this.txtServerNickname = new System.Windows.Forms.TextBox();
-            this.lblServerNickname = new System.Windows.Forms.Label();
             this.tcMain.SuspendLayout();
             this.tpClient.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudClientPort)).BeginInit();
@@ -86,9 +86,9 @@
             // 
             // btnServerStart
             // 
-            this.btnServerStart.Location = new System.Drawing.Point(480, 11);
+            this.btnServerStart.Location = new System.Drawing.Point(480, 10);
             this.btnServerStart.Name = "btnServerStart";
-            this.btnServerStart.Size = new System.Drawing.Size(96, 23);
+            this.btnServerStart.Size = new System.Drawing.Size(96, 24);
             this.btnServerStart.TabIndex = 4;
             this.btnServerStart.Text = "Start server";
             this.btnServerStart.UseVisualStyleBackColor = true;
@@ -96,9 +96,9 @@
             // 
             // btnClientConnect
             // 
-            this.btnClientConnect.Location = new System.Drawing.Point(624, 11);
+            this.btnClientConnect.Location = new System.Drawing.Point(624, 10);
             this.btnClientConnect.Name = "btnClientConnect";
-            this.btnClientConnect.Size = new System.Drawing.Size(80, 23);
+            this.btnClientConnect.Size = new System.Drawing.Size(80, 24);
             this.btnClientConnect.TabIndex = 6;
             this.btnClientConnect.Text = "Connect";
             this.btnClientConnect.UseVisualStyleBackColor = true;
@@ -254,6 +254,7 @@
             this.rtbClientChat.BackColor = System.Drawing.Color.WhiteSmoke;
             this.rtbClientChat.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.rtbClientChat.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbClientChat.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.rtbClientChat.Location = new System.Drawing.Point(0, 0);
             this.rtbClientChat.Name = "rtbClientChat";
             this.rtbClientChat.ReadOnly = true;
@@ -325,6 +326,23 @@
             this.tpServer.TabIndex = 1;
             this.tpServer.Text = "Server";
             this.tpServer.UseVisualStyleBackColor = true;
+            // 
+            // txtServerNickname
+            // 
+            this.txtServerNickname.Location = new System.Drawing.Point(176, 12);
+            this.txtServerNickname.Name = "txtServerNickname";
+            this.txtServerNickname.Size = new System.Drawing.Size(112, 20);
+            this.txtServerNickname.TabIndex = 15;
+            this.txtServerNickname.Text = "Admin";
+            // 
+            // lblServerNickname
+            // 
+            this.lblServerNickname.AutoSize = true;
+            this.lblServerNickname.Location = new System.Drawing.Point(112, 16);
+            this.lblServerNickname.Name = "lblServerNickname";
+            this.lblServerNickname.Size = new System.Drawing.Size(58, 13);
+            this.lblServerNickname.TabIndex = 14;
+            this.lblServerNickname.Text = "Nickname:";
             // 
             // txtServerPassword
             // 
@@ -450,23 +468,6 @@
             this.tsmiClientSendPing.Size = new System.Drawing.Size(151, 22);
             this.tsmiClientSendPing.Text = "Send ping";
             this.tsmiClientSendPing.Click += new System.EventHandler(this.tsmiClientSendPing_Click);
-            // 
-            // txtServerNickname
-            // 
-            this.txtServerNickname.Location = new System.Drawing.Point(176, 12);
-            this.txtServerNickname.Name = "txtServerNickname";
-            this.txtServerNickname.Size = new System.Drawing.Size(112, 20);
-            this.txtServerNickname.TabIndex = 15;
-            this.txtServerNickname.Text = "Admin";
-            // 
-            // lblServerNickname
-            // 
-            this.lblServerNickname.AutoSize = true;
-            this.lblServerNickname.Location = new System.Drawing.Point(112, 16);
-            this.lblServerNickname.Name = "lblServerNickname";
-            this.lblServerNickname.Size = new System.Drawing.Size(58, 13);
-            this.lblServerNickname.TabIndex = 14;
-            this.lblServerNickname.Text = "Nickname:";
             // 
             // MainForm
             // 

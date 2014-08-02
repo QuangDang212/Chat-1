@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace Chat
 {
@@ -129,15 +130,27 @@ namespace Chat
 
         public void SendPacket(PacketInfo packetInfo)
         {
-            StreamWriter sw = new StreamWriter(client.GetStream());
-            JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+            new Thread(() => SendPacketThread(packetInfo)).Start();
+        }
+
+        private void SendPacketThread(PacketInfo packetInfo)
+        {
+            try
             {
-                NullValueHandling = NullValueHandling.Ignore
-            };
-            string data = JsonConvert.SerializeObject(packetInfo, jsonSettings);
-            Debug.WriteLine("SendPacket: " + data);
-            sw.Write(data);
-            sw.Flush();
+                StreamWriter sw = new StreamWriter(client.GetStream());
+                JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                };
+                string data = JsonConvert.SerializeObject(packetInfo, jsonSettings);
+                Debug.WriteLine("SendPacket: " + data);
+                sw.Write(data);
+                sw.Flush();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Send packet failed: " + e.ToString());
+            }
         }
     }
 }

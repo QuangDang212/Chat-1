@@ -34,14 +34,9 @@ namespace Chat
 {
     public class ServerManager
     {
-        public delegate void ConsoleEventHandler(string text);
-        public event ConsoleEventHandler ConsoleOutput;
-
-        public delegate void UserConnectedEventHandler(UserInfo userInfo);
-        public event UserConnectedEventHandler UserConnected;
-
-        public delegate void UserDisconnectedEventHandler(UserInfo userInfo);
-        public event UserDisconnectedEventHandler UserDisconnected;
+        public event Action<string> ConsoleOutput;
+        public event Action<UserInfo> UserConnected;
+        public event Action<UserInfo> UserDisconnected;
 
         public bool IsWorking { get; private set; }
         public List<Client> Clients { get; private set; }
@@ -55,14 +50,24 @@ namespace Chat
         public ServerManager(int port, string nickname, string password = "")
         {
             Port = port;
-            Nickname = string.IsNullOrEmpty(nickname) ? "Admin" : nickname;
+            Nickname = nickname;
             Password = password;
         }
 
         public void StartServer()
         {
-            Clients = new List<Client>();
+            if (Port < 1 || Port > 65535)
+            {
+                throw new Exception("Invalid port number.");
+            }
+
+            if (string.IsNullOrEmpty(Nickname))
+            {
+                throw new Exception("Nickname can't be empty.");
+            }
+
             IsWorking = true;
+            Clients = new List<Client>();
             tcpListener = new TcpListener(IPAddress.Any, Port);
             tcpListener.Start();
             Thread listenThread = new Thread(ListenThread);
@@ -73,8 +78,8 @@ namespace Chat
 
         public void StopServer()
         {
+            KickAllClients("Server closing.");
             IsWorking = false;
-            KickAllClients();
             tcpListener.Stop();
             OnConsoleOutput("Server stopped.");
         }
@@ -87,7 +92,7 @@ namespace Chat
                 {
                     TcpClient incomingClient = tcpListener.AcceptTcpClient();
                     Client client = new Client(incomingClient);
-                    client.MessageReceived += client_MessageReceived;
+                    client.MessageReceived += ClientMessageReceived;
                     client.Disconnected += ClientDisconnected;
                     OnConsoleOutput(string.Format("Client connected: {0}", client.IP));
                 }
@@ -173,7 +178,7 @@ namespace Chat
             }
         }
 
-        private void client_MessageReceived(Client client, string text)
+        private void ClientMessageReceived(Client client, string text)
         {
             OnConsoleOutput(string.Format("{0} {1}: {2}", client.UserInfo.Nickname, client.IP, text));
 
@@ -188,18 +193,12 @@ namespace Chat
                 return;
             }
 
-            if (packetInfo != null)
+            if (packetInfo != null && !string.IsNullOrEmpty(packetInfo.Command))
             {
                 if (packetInfo.Command == "Connect")
                 {
-                    client.UserInfo.Nickname = packetInfo.Parameters["Nickname"];
-
-                    string password = "";
-                    if (packetInfo.Parameters.ContainsKey("Password"))
-                    {
-                        password = packetInfo.Parameters["Password"];
-                    }
-
+                    client.UserInfo.Nickname = packetInfo.GetParameter("Nickname");
+                    string password = packetInfo.GetParameter("Password");
                     ClientConnect(client, password);
                 }
                 else if (client.Authorized)
@@ -207,12 +206,7 @@ namespace Chat
                     switch (packetInfo.Command)
                     {
                         case "Disconnect":
-                            string reason = "";
-                            if (packetInfo.Parameters.ContainsKey("Reason"))
-                            {
-                                reason = packetInfo.Parameters["Reason"];
-                            }
-
+                            string reason = packetInfo.GetParameter("Reason");
                             ClientDisconnected(client, reason);
                             break;
                         case "Message":
@@ -242,15 +236,15 @@ namespace Chat
             }
         }
 
-        public void KickClient(Client client, string reason)
+        public void KickClient(Client client, string reason = "")
         {
             PacketInfo packetInfo = new PacketInfo("Kick");
-            packetInfo.AddParameter("Reason", reason);
+            if (!string.IsNullOrEmpty(reason)) packetInfo.AddParameter("Reason", reason);
             client.SendPacket(packetInfo);
             client.Disconnect();
         }
 
-        public void KickAllClients(string reason = "Server closing.")
+        public void KickAllClients(string reason)
         {
             foreach (Client client in Clients.ToArray())
             {

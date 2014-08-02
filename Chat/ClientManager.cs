@@ -24,7 +24,6 @@
 
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
@@ -133,36 +132,36 @@ namespace Chat
         {
             PacketInfo packetInfo = JsonConvert.DeserializeObject<PacketInfo>(text);
 
-            switch (packetInfo.Command)
+            if (packetInfo != null && !string.IsNullOrEmpty(packetInfo.Command))
             {
-                case "Connected":
-                    UserInfo connectedUserInfo = packetInfo.GetData<UserInfo>();
-                    OnNotification(connectedUserInfo.Nickname + " connected.");
-                    OnUserConnected(connectedUserInfo);
-                    break;
-                case "Disconnected":
-                    UserInfo disconnectedUserInfo = packetInfo.GetData<UserInfo>();
-                    OnNotification(disconnectedUserInfo.Nickname + " disconnected.");
-                    OnUserDisconnected(disconnectedUserInfo);
-                    break;
-                case "Message":
-                    MessageInfo messageInfo = packetInfo.GetData<MessageInfo>();
-                    OnMessageReceived(messageInfo);
-                    break;
-                case "UserList":
-                    UserInfo[] userList = packetInfo.GetData<UserInfo[]>();
-                    OnUserListReceived(userList);
-                    break;
-                case "Kick":
-                    string kickReason = packetInfo.Parameters["Reason"];
-                    OnKicked(kickReason);
-                    break;
-                case "Pong":
-                    if (pingTimer != null)
-                    {
-                        OnPong(pingTimer.ElapsedMilliseconds);
-                    }
-                    break;
+                switch (packetInfo.Command)
+                {
+                    case "Connected":
+                        UserInfo connectedUserInfo = packetInfo.GetData<UserInfo>();
+                        OnNotification(connectedUserInfo.Nickname + " connected.");
+                        OnUserConnected(connectedUserInfo);
+                        break;
+                    case "Disconnected":
+                        UserInfo disconnectedUserInfo = packetInfo.GetData<UserInfo>();
+                        OnNotification(disconnectedUserInfo.Nickname + " disconnected.");
+                        OnUserDisconnected(disconnectedUserInfo);
+                        break;
+                    case "Message":
+                        MessageInfo messageInfo = packetInfo.GetData<MessageInfo>();
+                        OnMessageReceived(messageInfo);
+                        break;
+                    case "UserList":
+                        UserInfo[] userList = packetInfo.GetData<UserInfo[]>();
+                        OnUserListReceived(userList);
+                        break;
+                    case "Kick":
+                        string reason = packetInfo.GetParameter("Reason");
+                        OnKicked(reason);
+                        break;
+                    case "Pong":
+                        if (pingTimer != null) OnPong(pingTimer.ElapsedMilliseconds);
+                        break;
+                }
             }
         }
 

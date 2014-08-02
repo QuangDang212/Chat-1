@@ -48,6 +48,16 @@ namespace Chat
             Parameters.Add(name, value);
         }
 
+        public string GetParameter(string name, string defaultValue = "")
+        {
+            if (Parameters != null && Parameters.ContainsKey(name))
+            {
+                return Parameters[name];
+            }
+
+            return defaultValue;
+        }
+
         public T GetData<T>()
         {
             JToken obj = Data as JToken;

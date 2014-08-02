@@ -424,7 +424,8 @@ namespace Chat
 
         private void client_Kicked(string reason)
         {
-            AddClientMessage("Kicked: " + reason);
+            string reasonMessage = string.IsNullOrEmpty(reason) ? "" : ": " + reason;
+            AddClientMessage("Kicked" + reasonMessage);
             ClientDisconnect();
         }
 
